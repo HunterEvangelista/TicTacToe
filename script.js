@@ -18,23 +18,50 @@ const gameBoard = (() => {
    const board = [];
    const rows = 3;
    const cols = 3;
+   const emptyCell = 0;
 
    for (let i = 0; i < rows; i += 1) {
+      board[i] = [];
       for (let j = 0; j < cols; j += 1) {
-         board[i][j].push(0);
+         board[i].push(emptyCell);
       }
    }
 
    const getBoard = () => board;
 
    const updateBoard = (row, col, piece) => {
-      board[row][col].pop(piece);
+      board[row].splice(col, 1, piece);
       return board;
    };
+
+   // generate array that will hold valid moves
+   // get all available moves, should be every single coordinate pair at first
+   // define getter for closure, to call in different classes in game flow
+
+   const validMoves = [];
+
+   const updateValidMoves = () => {
+      for (let i = 0; i < 3; i += 1) {
+         for (let j = 0; j < 3; j += 1) {
+            console.log(board[i][j]);
+            if (board[i][j] === 0) {
+               validMoves.push([i, j]);
+            }
+         }
+      }
+      return validMoves;
+   };
+
+   const getValidMoves = () => updateValidMoves();
+
+   //  const validateMove = (row, col) => {
+
+   //  }
 
    return {
       getBoard,
       updateBoard,
+      getValidMoves,
    };
 })();
 
@@ -52,12 +79,9 @@ const gameFuncs = (() => {
       return playerFactory(name, piece, playerType);
    };
 
-   const getBoard = () => gameBoard.board();
-
    return {
       getPlayerOne,
       getPlayerTwo,
-      getBoard,
    };
 })();
 
@@ -74,7 +98,7 @@ const gameFlow = (() => {
 
    const getActivePlayer = () => activePlayer;
 
-   const board = gameFuncs.getBoard();
+   const board = gameBoard.getBoard();
 
    const playRound = () => {
       // display board in console, should be empty
@@ -91,7 +115,6 @@ const gameFlow = (() => {
    const playGame = () => {
       // continue to call rounds until a winner or tie is decided
       console.log("filler");
-
    };
 
    // render board
