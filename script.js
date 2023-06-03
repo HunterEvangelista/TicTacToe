@@ -25,8 +25,16 @@ const gameBoard = (() => {
       }
    }
 
+   const getBoard = () => board;
+
+   const updateBoard = (row, col, piece) => {
+      board[row][col].pop(piece);
+      return board;
+   };
+
    return {
-      board,
+      getBoard,
+      updateBoard,
    };
 })();
 
@@ -83,7 +91,7 @@ const gameFlow = (() => {
    const playGame = () => {
       // continue to call rounds until a winner or tie is decided
       console.log("filler");
-      
+
    };
 
    // render board
