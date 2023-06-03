@@ -10,18 +10,23 @@ const globalTestMoves = [
 const playerFactory = (playerName, piece, playerType) => ({ playerName, piece, playerType });
 
 const gameBoard = (() => {
-   const board = [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-   ];
-   const registerMove = (row, col, piece) => {
-      board[row][col] = piece;
-      return board;
-   };
+   // change the board to be an empty array
+   // define the size of it and use a nested loop to generate it
+   // recreate the board each time in the console for the game
+   // the dom does not to be iterated like this
+   // use register move to check and create
+   const board = [];
+   const rows = 3;
+   const cols = 3;
+
+   for (let i = 0; i < rows; i += 1) {
+      for (let j = 0; j < cols; j += 1) {
+         board[i][j].push(0);
+      }
+   }
+
    return {
       board,
-      registerMove,
    };
 })();
 
@@ -39,9 +44,12 @@ const gameFuncs = (() => {
       return playerFactory(name, piece, playerType);
    };
 
+   const getBoard = () => gameBoard.board();
+
    return {
       getPlayerOne,
       getPlayerTwo,
+      getBoard,
    };
 })();
 
@@ -58,22 +66,24 @@ const gameFlow = (() => {
 
    const getActivePlayer = () => activePlayer;
 
-   const { ...board } = gameBoard;
-
-   let turnNumber = 0;
+   const board = gameFuncs.getBoard();
 
    const playRound = () => {
-      console.log(board.board);
-      console.log(`${getActivePlayer().name}'s Turn`);
-      boardUpdate = board.registerMove(globalTestMoves[turnNumber][0], globalTestMoves[turnNumber][1], getActivePlayer().piece);
-      switchPlayer();
-      turnNumber += 1;
+      // display board in console, should be empty
+      // get move from player one
+      // check if move is valid, should be built into to register move
+      // check if the move wins
+      // check move is a tie
+      // if move is valid return board
+      // change active player
+      console.log(board);
+      console.log();
    };
 
    const playGame = () => {
-      for (let i = 0; i < 3; i += 1) {
-         playRound();
-      }
+      // continue to call rounds until a winner or tie is decided
+      console.log("filler");
+      
    };
 
    // render board
@@ -93,9 +103,6 @@ const gameFlow = (() => {
       activePlayer,
       switchPlayer,
       getActivePlayer,
-      board,
       playRound,
    };
 })();
-
-console.log(gameFlow.playRound());
