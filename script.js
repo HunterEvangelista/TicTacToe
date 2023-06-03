@@ -1,10 +1,11 @@
-// tictactoe
-// need to keep in mind that everything should be contained in objects
-// create the board
-// the pieces
-// the players
-// if there is one use a module
-// if there are many use a factory function
+// setting some sample moves to call for logic testing
+const globalTestMoves = [
+   [0, 0],
+   [0, 2],
+   [1, 0],
+   [1, 1],
+   [0, 1],
+];
 
 const playerFactory = (playerName, piece, playerType) => ({ playerName, piece, playerType });
 
@@ -52,6 +53,27 @@ const gameFlow = (() => {
 
    const switchPlayer = () => {
       activePlayer = activePlayer === playerOne ? playerTwo : playerOne;
+      return activePlayer;
+   };
+
+   const getActivePlayer = () => activePlayer;
+
+   const { ...board } = gameBoard;
+
+   let turnNumber = 0;
+
+   const playRound = () => {
+      console.log(board.board);
+      console.log(`${getActivePlayer().name}'s Turn`);
+      boardUpdate = board.registerMove(globalTestMoves[turnNumber][0], globalTestMoves[turnNumber][1], getActivePlayer().piece);
+      switchPlayer();
+      turnNumber += 1;
+   };
+
+   const playGame = () => {
+      for (let i = 0; i < 3; i += 1) {
+         playRound();
+      }
    };
 
    // render board
@@ -63,8 +85,17 @@ const gameFlow = (() => {
    // check for any other valid moves - is board full?
 
    // wait for player move or return computer move
+
+   // returning everything for now to test
    return {
       playerOne,
       playerTwo,
+      activePlayer,
+      switchPlayer,
+      getActivePlayer,
+      board,
+      playRound,
    };
 })();
+
+console.log(gameFlow.playRound());
