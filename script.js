@@ -43,7 +43,6 @@ const gameBoard = (() => {
    const updateValidMoves = () => {
       for (let i = 0; i < 3; i += 1) {
          for (let j = 0; j < 3; j += 1) {
-            console.log(board[i][j]);
             if (board[i][j] === 0) {
                validMoves.push([i, j]);
             }
@@ -96,9 +95,14 @@ const gameFlow = (() => {
       return activePlayer;
    };
 
-   const getActivePlayer = () => activePlayer;
+   const getActivePlayer = () => activePlayer; // can use this later to pull info into the DOM
 
-   const board = gameBoard.getBoard();
+   let board = gameBoard.getBoard();
+
+   // temp method to control the flow of the game
+   let turnCount = 0;
+
+   const getChoice = () => globalTestMoves[turnCount];
 
    const playRound = () => {
       // display board in console, should be empty
@@ -109,12 +113,21 @@ const gameFlow = (() => {
       // if move is valid return board
       // change active player
       console.log(board);
-      console.log();
+      console.log(`It's ${activePlayer.playerName}'s turn.`);
+      // This area should be used for getting the player move
+      board = gameBoard.updateBoard(getChoice()[0], getChoice()[1], activePlayer.piece);
+      switchPlayer();
+      turnCount += 1;
+      return board;
    };
 
    const playGame = () => {
       // continue to call rounds until a winner or tie is decided
-      console.log("filler");
+      console.log(board);
+
+      for (let i = 1; i < globalTestMoves.length; i += 1) {
+         playRound();
+      }
    };
 
    // render board
@@ -129,11 +142,8 @@ const gameFlow = (() => {
 
    // returning everything for now to test
    return {
-      playerOne,
-      playerTwo,
-      activePlayer,
-      switchPlayer,
-      getActivePlayer,
-      playRound,
+      playGame,
    };
 })();
+
+gameFlow.playGame();
