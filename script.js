@@ -105,13 +105,6 @@ const gameFlow = (() => {
    const getChoice = () => globalTestMoves[turnCount];
 
    const playRound = () => {
-      // display board in console, should be empty
-      // get move from player one
-      // check if move is valid, should be built into to register move
-      // check if the move wins
-      // check move is a tie
-      // if move is valid return board
-      // change active player
       console.log(board);
       console.log(`It's ${activePlayer.playerName}'s turn.`);
       // This area should be used for getting the player move
@@ -141,9 +134,21 @@ const gameFlow = (() => {
    // wait for player move or return computer move
 
    // returning everything for now to test
+
+   const testMethod = (e) => {
+      const coordinates = Array(e.target.classList.value);
+      const row = coordinates[0].split(" ")[0];
+      const col = coordinates[0].split(" ")[1];
+   };
+
    return {
       playGame,
+      testMethod,
    };
 })();
 
-gameFlow.playGame();
+const consoleBoard = document.querySelectorAll(".board-container>div");
+
+consoleBoard.forEach((cell) => {
+   cell.addEventListener("click", gameFlow.testMethod);
+});
