@@ -34,10 +34,6 @@ const gameBoard = (() => {
       return board;
    };
 
-   // generate array that will hold valid moves
-   // get all available moves, should be every single coordinate pair at first
-   // define getter for closure, to call in different classes in game flow
-
    const validMoves = [];
 
    const updateValidMoves = () => {
@@ -123,27 +119,32 @@ const gameFlow = (() => {
       }
    };
 
-   // render board
-
-   // allow input of move
-   // check validity of move
-   // if valid update board
-   // check for a win
-   // check for any other valid moves - is board full?
-
-   // wait for player move or return computer move
-
-   // returning everything for now to test
-
-   const testMethod = (e) => {
-      const coordinates = Array(e.target.classList.value);
-      const row = coordinates[0].split(" ")[0];
-      const col = coordinates[0].split(" ")[1];
+   const playerSelection = (e) => {
+      const { row } = e.target.dataset;
+      const { col } = e.target.dataset;
+      const { piece } = activePlayer;
+      const activeCell = document.querySelector(`div[data-row="${row}"][data-col="${col}"]`);
+      console.log(activeCell.classList);
+      if (activeCell.classList.length === 0) {
+         activeCell.classList.add(piece);
+         activeCell.innerHTML = piece;
+         switchPlayer();
+      } else {
+         // handle invalid click here
+      }
    };
 
    return {
       playGame,
-      testMethod,
+      playerSelection,
+   };
+})();
+
+const displayController = (() => {
+   const screenBoard = document.querySelectorAll(".board-container>div");
+
+   return {
+      screenBoard,
    };
 })();
 
@@ -152,3 +153,8 @@ const consoleBoard = document.querySelectorAll(".board-container>div");
 consoleBoard.forEach((cell) => {
    cell.addEventListener("click", gameFlow.testMethod);
 });
+
+displayController.screenBoard.forEach((cell) => {
+   cell.addEventListener("click", gameFlow.playerSelection);
+});
+// next step is to get the board to show a piece
