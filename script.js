@@ -80,6 +80,14 @@ const gameFuncs = (() => {
    };
 })();
 
+const displayController = (() => {
+   const screenBoard = document.querySelectorAll(".board-container>div");
+
+   return {
+      screenBoard,
+   };
+})();
+
 const gameFlow = (() => {
    const playerOne = gameFuncs.getPlayerOne();
    const playerTwo = gameFuncs.getPlayerTwo();
@@ -110,28 +118,27 @@ const gameFlow = (() => {
       return board;
    };
 
-   const playGame = () => {
-      // continue to call rounds until a winner or tie is decided
-      console.log(board);
-
-      for (let i = 1; i < globalTestMoves.length; i += 1) {
-         playRound();
-      }
-   };
-
    const playerSelection = (e) => {
       const { row } = e.target.dataset;
       const { col } = e.target.dataset;
       const { piece } = activePlayer;
       const activeCell = document.querySelector(`div[data-row="${row}"][data-col="${col}"]`);
-      console.log(activeCell.classList);
+
       if (activeCell.classList.length === 0) {
          activeCell.classList.add(piece);
          activeCell.innerHTML = piece;
-         switchPlayer();
+         playRound();
       } else {
          // handle invalid click here
+         // signal to the player that the cell is invalid
       }
+   };
+
+   const playGame = () => {
+      const DOMBoard = displayController.screenBoard;
+      DOMBoard.forEach((cell) => {
+         cell.addEventListener("click", playerSelection);
+      });
    };
 
    return {
@@ -140,21 +147,16 @@ const gameFlow = (() => {
    };
 })();
 
-const displayController = (() => {
-   const screenBoard = document.querySelectorAll(".board-container>div");
+gameFlow.playGame();
 
-   return {
-      screenBoard,
-   };
-})();
-
-const consoleBoard = document.querySelectorAll(".board-container>div");
-
-consoleBoard.forEach((cell) => {
-   cell.addEventListener("click", gameFlow.testMethod);
-});
-
-displayController.screenBoard.forEach((cell) => {
-   cell.addEventListener("click", gameFlow.playerSelection);
-});
-// next step is to get the board to show a piece
+// tie the display in with the general game flow
+// begin cleaning up the old methods that are no longer needed
+// a click should attempt to call the play round feature in the game
+// once the player makes the choice the game should instantly validate the move
+// if it is invalid then the screen should update with some indication so the player knows
+// once the selection is valid the program should update the board on the screen and internally
+// the internal board will be used to check for a win or a tie
+// we can worry about the player choice later, assume player two is human for now
+// attach each cell with an event listener that plays the round (or turn)
+// do this under display controller
+// see above for the flow of how it should work logically
