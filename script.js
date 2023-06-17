@@ -1,20 +1,8 @@
-// setting some sample moves to call for logic testing
-const globalTestMoves = [
-   [0, 0],
-   [0, 2],
-   [1, 0],
-   [1, 1],
-   [0, 1],
-];
+let gameState = "start";
 
 const playerFactory = (playerName, piece, playerType) => ({ playerName, piece, playerType });
 
 const gameBoard = (() => {
-   // change the board to be an empty array
-   // define the size of it and use a nested loop to generate it
-   // recreate the board each time in the console for the game
-   // the dom does not to be iterated like this
-   // use register move to check and create
    const board = [];
    const rows = 3;
    const cols = 3;
@@ -34,9 +22,10 @@ const gameBoard = (() => {
       return board;
    };
 
-   const validMoves = [];
+   let validMoves = [];
 
    const updateValidMoves = () => {
+      validMoves = [];
       for (let i = 0; i < 3; i += 1) {
          for (let j = 0; j < 3; j += 1) {
             if (board[i][j] === 0) {
@@ -47,16 +36,22 @@ const gameBoard = (() => {
       return validMoves;
    };
 
-   const getValidMoves = () => updateValidMoves();
+   const checkStatus = () => {
+      updateValidMoves();
+      // check board for a win
+      // logic for that here
 
-   //  const validateMove = (row, col) => {
-
-   //  }
+      // check for a tie
+      if (validMoves.length === 0) {
+         gameState = "tie";
+      }
+      return gameState;
+   };
 
    return {
       getBoard,
       updateBoard,
-      getValidMoves,
+      checkStatus,
    };
 })();
 
@@ -103,18 +98,18 @@ const gameFlow = (() => {
 
    let board = gameBoard.getBoard();
 
-   // temp method to control the flow of the game
-   let turnCount = 0;
+   //  const getChoice = () => globalTestMoves[turnCount];
 
-   const getChoice = () => globalTestMoves[turnCount];
-
-   const playRound = () => {
-      console.log(board);
-      console.log(`It's ${activePlayer.playerName}'s turn.`);
-      // This area should be used for getting the player move
-      board = gameBoard.updateBoard(getChoice()[0], getChoice()[1], activePlayer.piece);
+   const handleTurn = (row, col, piece) => {
+      board = gameBoard.updateBoard(row, col, piece);
+      // check for tie and win, if none then switch players and keep on going
+      gameBoard.checkStatus();
+      if (gameState === "tie") {
+         alert("Tie Game!");
+      } else if (gameState === "win") {
+         alert(`${activePlayer.playerName} Wins!`);
+      }
       switchPlayer();
-      turnCount += 1;
       return board;
    };
 
@@ -127,7 +122,7 @@ const gameFlow = (() => {
       if (activeCell.classList.length === 0) {
          activeCell.classList.add(piece);
          activeCell.innerHTML = piece;
-         playRound();
+         handleTurn(row, col, piece);
       } else {
          // handle invalid click here
          // signal to the player that the cell is invalid
@@ -135,6 +130,7 @@ const gameFlow = (() => {
    };
 
    const playGame = () => {
+      gameState = "active"; // this should be changed when player names and options are introduced
       const DOMBoard = displayController.screenBoard;
       DOMBoard.forEach((cell) => {
          cell.addEventListener("click", playerSelection);
