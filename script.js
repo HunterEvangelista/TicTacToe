@@ -36,10 +36,74 @@ const gameBoard = (() => {
       return validMoves;
    };
 
-   const checkStatus = () => {
+   const checkStatus = (piece) => {
       updateValidMoves();
       // check board for a win
       // logic for that here
+      // check rows
+      // check cols
+      // check diag row == col
+      // check anti diag row + col == 2
+      const pieceCounts = {
+         row: 0,
+         col: 0,
+         diag: 0,
+         antiDiag: 0,
+      };
+
+      // iterate through each row
+      for (let i = 0; i < 3; i += 1) {
+         if (board[i].includes(piece)) {
+            board[i].forEach((x) => {
+               if (x === piece) {
+                  pieceCounts.row += 1;
+               }
+            });
+            if (pieceCounts.row === board.length) {
+               gameState = "win";
+               i = 3;
+            } else {
+               pieceCounts.row = 0;
+            }
+         }
+      }
+      // iterate through each col
+      for (let j = 0; j < 3; j += 1) {
+         let row = 0;
+         // check the current col
+         if (board[row][j] === piece) {
+            pieceCounts.col += 1;
+            row += 1;
+            while (row < 3) {
+               if (board[row][j] === piece) {
+                  pieceCounts.col += 1;
+               }
+               row += 1;
+            }
+         }
+         if (pieceCounts.col === board.length) {
+            gameState = "win";
+            j = 3;
+         }
+      }
+
+      // iterate through each cell to check the diagonals
+      for (let i = 0; i < 3; i += 1) {
+         for (let j = 0; j < 3; j += 1) {
+            if (i === j && board[i][j] === piece) {
+               pieceCounts.diag += 1;
+            }
+            if (i + j === board.length && board[i][j] === piece) {
+               pieceCounts.antiDiag += 1;
+            }
+         }
+      }
+      if (pieceCounts.diag === board.length || pieceCounts.antiDiag === board.length) {
+         gameState = "win";
+      }
+
+      pieceCounts.diag = 0;
+      pieceCounts.antiDiag = 0;
 
       // check for a tie
       if (validMoves.length === 0) {
@@ -103,7 +167,7 @@ const gameFlow = (() => {
    const handleTurn = (row, col, piece) => {
       board = gameBoard.updateBoard(row, col, piece);
       // check for tie and win, if none then switch players and keep on going
-      gameBoard.checkStatus();
+      gameBoard.checkStatus(piece);
       if (gameState === "tie") {
          alert("Tie Game!");
       } else if (gameState === "win") {
@@ -123,9 +187,6 @@ const gameFlow = (() => {
          activeCell.classList.add(piece);
          activeCell.innerHTML = piece;
          handleTurn(row, col, piece);
-      } else {
-         // handle invalid click here
-         // signal to the player that the cell is invalid
       }
    };
 
